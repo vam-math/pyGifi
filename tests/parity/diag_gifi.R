@@ -1,6 +1,12 @@
 library(Gifi)
-DATA_PATH <- "/media/bhaavesh/New Volume/studies/antigravity-projects/pyGifi/PyGifi2/car_pure_categorical_1000.csv"
-df <- read.csv(DATA_PATH, stringsAsFactors = TRUE, na.strings = "")
+
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) < 1) {
+    stop("Usage: Rscript tests/parity/diag_gifi.R <csv-path>")
+}
+
+data_path <- normalizePath(args[1], winslash = "/")
+df <- read.csv(data_path, stringsAsFactors = TRUE, na.strings = "")
 df[] <- lapply(df, factor)
 
 fit <- princals(df, ndim = 2)

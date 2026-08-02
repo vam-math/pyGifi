@@ -21,6 +21,7 @@ if _RNG_DIR not in sys.path:
     sys.path.insert(0, _RNG_DIR)
 
 from pygifi import Princals
+from pygifi.utils.type_inference import prepare_dataframe_with_inference
 
 
 def check_rng_available():
@@ -57,11 +58,18 @@ for ds in datasets:
     # Drop unnamed index columns
     data.drop(columns=[c for c in data.columns if "Unnamed" in c], inplace=True)
 
-    # All columns will be converted to categorical
-    for col in data.columns:
-        data[col] = data[col].astype("category")
+    data, resolved_kinds, inferred = prepare_dataframe_with_inference(
+        data,
+        interactive=bool(sys.stdin.isatty()),
+    )
 
     print(f"\n[{prefix}]")
+    for col in data.columns:
+        info = inferred[str(col)]
+        print(
+            f"  [TYPE] {col}: {resolved_kinds[str(col)]} "
+            f"(inferred={info.kind}; unique={info.unique_count})"
+        )
 
     # ─────────────────────────────────────────────────────────────────
     # PRINCALS  — use r_seed=1 for exact R parity when extension available

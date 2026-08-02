@@ -19,13 +19,15 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import block_diag
 from scipy.sparse import csr_matrix
+from pygifi.utils.type_inference import prepare_dataframe_with_inference
 
 def sanitize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """
     Sanitize pandas DataFrame for Gifi modeling:
     1. Removes any index columns usually named ^Unnamed
     2. Removes any constant columns (nunique <= 1)
-    3. Converts all remaining string/object/int columns to 'category' dtype
+    3. Uses heuristics to keep metric columns numeric and coerce discrete columns
+       to pandas 'category' dtype.
     """
     df_clean = df.copy()
     
@@ -40,12 +42,9 @@ def sanitize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     if len(constant_cols) > 0:
         df_clean = df_clean.drop(columns=constant_cols)
         
-    # 3. Convert everything to category (unless already category)
-    for col in df_clean.columns:
-        if not getattr(df_clean[col].dtype, 'name', '') == 'category':
-            df_clean[col] = df_clean[col].astype("category")
-            
-    return df_clean
+    # 3. Infer and coerce column roles non-interactively for library use
+    coerced, _, _ = prepare_dataframe_with_inference(df_clean, interactive=False)
+    return coerced
 
 
 def center(x):

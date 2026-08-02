@@ -8,6 +8,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pygifi
 from pygifi import Homals, Princals, Morals, plot
+from pygifi.utils.type_inference import prepare_dataframe_with_inference
 from datetime import datetime
 
 print(f"pygifi version : {pygifi.__version__}")
@@ -166,10 +167,16 @@ def main():
                 # Cleaning column names for consistency
                 df.columns = df.columns.str.replace(' ', '.')
                 
-                # Pre-processing for Homals/Princals: convert to categorical
-                df_cat = df.copy()
+                df_cat, resolved_kinds, inferred = prepare_dataframe_with_inference(
+                    df,
+                    interactive=bool(sys.stdin.isatty()),
+                )
                 for col in df_cat.columns:
-                    df_cat[col] = df_cat[col].astype('category')
+                    info = inferred[str(col)]
+                    print(
+                        f"  [TYPE] {col}: {resolved_kinds[str(col)]} "
+                        f"(inferred={info.kind}; unique={info.unique_count})"
+                    )
                 
                 # 1. HOMALS
                 run_homals(df_cat, fname)
