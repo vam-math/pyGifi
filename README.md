@@ -306,4 +306,4 @@ GPL-3.0-or-later — same as the original R Gifi package.
 ## 🙏 Credits
 
 Original R Gifi package by Patrick Mair, Jan de Leeuw, and Patrick Groenen. Python port developed for research reproducibility.
-The R to python conversion was developed by Sanjeev, Bhavesh from Amrita College of Engineering, Chennai and Vamanie Perumal, Indian Institute of Technology Madras.
+The R to python conversion was developed by Vamanie Perumal, Indian Institute of Technology Madras and Sanjeev, Bhavesh from Amrita College of Engineering, Chennai.
