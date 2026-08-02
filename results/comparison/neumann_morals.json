@@ -1,0 +1,51 @@
+{
+  "dataset": "neumann",
+  "method": "morals",
+  "verdict": "PASS",
+  "detail": "max % diff = 2.029e-09% (xhat)",
+  "scored_max_pct_diff": 2.0294766782434547e-09,
+  "fields": {
+    "beta": {
+      "n": 2,
+      "max_abs_diff": 1.0055734023239893e-11,
+      "mean_abs_diff": 7.35161931331163e-12,
+      "max_pct_diff": 9.361208726910808e-10,
+      "mean_pct_diff": 6.843860698149761e-10
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 3.477556784203806e-14,
+      "mean_abs_diff": 3.477556784203806e-14,
+      "max_pct_diff": 1.7230427077609054e-09,
+      "mean_pct_diff": 1.7230427077609054e-09
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "max_pct_diff": 0.0,
+      "mean_pct_diff": 0.0
+    },
+    "smc": {
+      "n": 1,
+      "max_abs_diff": 4.227729277772596e-13,
+      "mean_abs_diff": 4.227729277772596e-13,
+      "max_pct_diff": 4.262067521455589e-11,
+      "mean_pct_diff": 4.262067521455589e-11
+    },
+    "xhat": {
+      "n": 130,
+      "max_abs_diff": 4.957895205492946e-12,
+      "mean_abs_diff": 1.6146129739036824e-12,
+      "max_pct_diff": 2.0294766782434547e-09,
+      "mean_pct_diff": 6.609295354400353e-10
+    },
+    "yhat": {
+      "n": 65,
+      "max_abs_diff": 4.9002746305149e-12,
+      "mean_abs_diff": 1.1297054988194409e-12,
+      "max_pct_diff": 1.9655690599581813e-09,
+      "mean_pct_diff": 4.531407610333861e-10
+    }
+  }
+}

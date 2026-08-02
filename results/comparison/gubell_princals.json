@@ -1,0 +1,69 @@
+{
+  "dataset": "gubell",
+  "method": "princals",
+  "verdict": "PASS",
+  "detail": "max % diff = 1.344e-09% (evals)",
+  "scored_max_pct_diff": 1.3442457255469962e-09,
+  "fields": {
+    "dmeasures": {
+      "n": 20,
+      "max_abs_diff": 3.5765279626787105e-12,
+      "mean_abs_diff": 9.225447988002456e-13,
+      "max_pct_diff": 3.698501090211388e-10,
+      "mean_pct_diff": 9.540070648786555e-11,
+      "rotation_sensitive": true
+    },
+    "evals": {
+      "n": 5,
+      "max_abs_diff": 4.399969277812943e-11,
+      "mean_abs_diff": 1.3457033360905757e-11,
+      "max_pct_diff": 1.3442457255469962e-09,
+      "mean_pct_diff": 4.111292245870526e-10
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 2.685518474265791e-12,
+      "mean_abs_diff": 2.685518474265791e-12,
+      "max_pct_diff": 4.76180361691016e-10,
+      "mean_pct_diff": 4.76180361691016e-10
+    },
+    "lambda": {
+      "n": 4,
+      "max_abs_diff": 2.912670105104098e-12,
+      "mean_abs_diff": 1.0242154550150172e-12,
+      "max_pct_diff": 4.4492943855526425e-10,
+      "mean_pct_diff": 1.564556200720745e-10
+    },
+    "loadings": {
+      "n": 10,
+      "max_abs_diff": 3.9360736892035675e-12,
+      "mean_abs_diff": 1.5034862244078796e-12,
+      "max_pct_diff": 4.002626215859296e-10,
+      "mean_pct_diff": 1.5289077014754678e-10,
+      "rotation_sensitive": true
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "max_pct_diff": 0.0,
+      "mean_pct_diff": 0.0
+    },
+    "quantifications": {
+      "n": 32,
+      "max_abs_diff": 4.5923265190594975e-12,
+      "mean_abs_diff": 1.7200145387835652e-12,
+      "max_pct_diff": 6.55642840118852e-10,
+      "mean_pct_diff": 2.455651209846308e-10,
+      "rotation_sensitive": true
+    },
+    "scoremat": {
+      "n": 35,
+      "max_abs_diff": 4.374833828535429e-12,
+      "mean_abs_diff": 2.2779167441200345e-12,
+      "max_pct_diff": 6.245915799942791e-10,
+      "mean_pct_diff": 3.252163794256978e-10,
+      "rotation_sensitive": true
+    }
+  }
+}

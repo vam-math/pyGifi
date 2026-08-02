@@ -1,0 +1,51 @@
+{
+  "dataset": "rosenbrock",
+  "method": "morals",
+  "verdict": "PASS",
+  "detail": "max % diff = 1.09e-09% (f)",
+  "scored_max_pct_diff": 1.0902943775086294e-09,
+  "fields": {
+    "beta": {
+      "n": 2,
+      "max_abs_diff": 4.86186091386287e-12,
+      "mean_abs_diff": 3.024067107837425e-12,
+      "max_pct_diff": 5.857211888633173e-10,
+      "mean_pct_diff": 3.643173288965355e-10
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 4.823155763666875e-13,
+      "mean_abs_diff": 4.823155763666875e-13,
+      "max_pct_diff": 1.0902943775086294e-09,
+      "mean_pct_diff": 1.0902943775086294e-09
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "max_pct_diff": 0.0,
+      "mean_pct_diff": 0.0
+    },
+    "smc": {
+      "n": 1,
+      "max_abs_diff": 3.750444399486241e-12,
+      "mean_abs_diff": 3.750444399486241e-12,
+      "max_pct_diff": 4.5138273532215524e-10,
+      "mean_pct_diff": 4.5138273532215524e-10
+    },
+    "xhat": {
+      "n": 60,
+      "max_abs_diff": 3.7063685454086226e-12,
+      "mean_abs_diff": 7.782077644328626e-13,
+      "max_pct_diff": 6.626812009952645e-10,
+      "mean_pct_diff": 1.3913987495848275e-10
+    },
+    "yhat": {
+      "n": 30,
+      "max_abs_diff": 3.6088354526953026e-12,
+      "mean_abs_diff": 4.56591535413775e-13,
+      "max_pct_diff": 5.991465490743795e-10,
+      "mean_pct_diff": 7.580429929976999e-11
+    }
+  }
+}

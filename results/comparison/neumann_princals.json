@@ -1,0 +1,69 @@
+{
+  "dataset": "neumann",
+  "method": "princals",
+  "verdict": "PASS",
+  "detail": "max % diff = 2.528e-09% (evals)",
+  "scored_max_pct_diff": 2.527951862090925e-09,
+  "fields": {
+    "dmeasures": {
+      "n": 12,
+      "max_abs_diff": 4.4112491437431345e-12,
+      "mean_abs_diff": 1.394404557097939e-12,
+      "max_pct_diff": 4.488452798409792e-10,
+      "mean_pct_diff": 1.4188087846497873e-10,
+      "rotation_sensitive": true
+    },
+    "evals": {
+      "n": 3,
+      "max_abs_diff": 4.709210799092034e-11,
+      "mean_abs_diff": 3.0886657886979495e-11,
+      "max_pct_diff": 2.527951862090925e-09,
+      "mean_pct_diff": 1.6580269529282801e-09
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 1.1367573549136978e-12,
+      "mean_abs_diff": 1.1367573549136978e-12,
+      "max_pct_diff": 2.2732183015741542e-10,
+      "mean_pct_diff": 2.2732183015741542e-10
+    },
+    "lambda": {
+      "n": 4,
+      "max_abs_diff": 4.6911363682511364e-12,
+      "mean_abs_diff": 1.8091736007765991e-12,
+      "max_pct_diff": 7.554740439392187e-10,
+      "mean_pct_diff": 2.913545011432516e-10
+    },
+    "loadings": {
+      "n": 6,
+      "max_abs_diff": 4.9645842992163125e-12,
+      "mean_abs_diff": 2.546934885216956e-12,
+      "max_pct_diff": 5.007838252314486e-10,
+      "mean_pct_diff": 2.5691250617613786e-10,
+      "rotation_sensitive": true
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "max_pct_diff": 0.0,
+      "mean_pct_diff": 0.0
+    },
+    "quantifications": {
+      "n": 250,
+      "max_abs_diff": 4.880013060315491e-12,
+      "mean_abs_diff": 5.828830716703148e-13,
+      "max_pct_diff": 1.986400094467095e-09,
+      "mean_pct_diff": 2.37261452852409e-10,
+      "rotation_sensitive": true
+    },
+    "scoremat": {
+      "n": 195,
+      "max_abs_diff": 4.880013060315491e-12,
+      "mean_abs_diff": 9.228046234028727e-13,
+      "max_pct_diff": 2.025850485128107e-09,
+      "mean_pct_diff": 3.8308589974927437e-10,
+      "rotation_sensitive": true
+    }
+  }
+}

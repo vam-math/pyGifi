@@ -1,0 +1,69 @@
+{
+  "dataset": "ABC",
+  "method": "princals",
+  "verdict": "PASS",
+  "detail": "max % diff = 8.77e-10% (lambda)",
+  "scored_max_pct_diff": 8.769559287532947e-10,
+  "fields": {
+    "dmeasures": {
+      "n": 44,
+      "max_abs_diff": 4.9633075427379936e-12,
+      "mean_abs_diff": 1.830783877166473e-12,
+      "max_pct_diff": 6.707367328883662e-10,
+      "mean_pct_diff": 2.474104185206158e-10,
+      "rotation_sensitive": true
+    },
+    "evals": {
+      "n": 11,
+      "max_abs_diff": 3.863664943537515e-11,
+      "mean_abs_diff": 7.372668132564865e-12,
+      "max_pct_diff": 6.95672717049857e-10,
+      "mean_pct_diff": 1.3274867636406097e-10
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 2.337130489138417e-12,
+      "mean_abs_diff": 2.337130489138417e-12,
+      "max_pct_diff": 3.3562940597022257e-10,
+      "mean_pct_diff": 3.3562940597022257e-10
+    },
+    "lambda": {
+      "n": 4,
+      "max_abs_diff": 4.427735955658818e-12,
+      "mean_abs_diff": 1.2433890244011546e-12,
+      "max_pct_diff": 8.769559287532947e-10,
+      "mean_pct_diff": 2.4626522168780127e-10
+    },
+    "loadings": {
+      "n": 22,
+      "max_abs_diff": 4.480860127387132e-12,
+      "mean_abs_diff": 1.702058002115627e-12,
+      "max_pct_diff": 5.208967525262685e-10,
+      "mean_pct_diff": 1.9786301306181782e-10,
+      "rotation_sensitive": true
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "max_pct_diff": 0.0,
+      "mean_pct_diff": 0.0
+    },
+    "quantifications": {
+      "n": 104,
+      "max_abs_diff": 4.9048265449158635e-12,
+      "mean_abs_diff": 4.0386343066208614e-13,
+      "max_pct_diff": 2.7749157711165873e-09,
+      "mean_pct_diff": 2.2848657192233026e-10,
+      "rotation_sensitive": true
+    },
+    "scoremat": {
+      "n": 2288,
+      "max_abs_diff": 4.904771033764632e-12,
+      "mean_abs_diff": 3.029210300991353e-13,
+      "max_pct_diff": 2.7748843655678663e-09,
+      "mean_pct_diff": 1.7137819984608488e-10,
+      "rotation_sensitive": true
+    }
+  }
+}

@@ -135,7 +135,11 @@ y = df.iloc[:, -1]
 model = pygifi.Morals(xdegrees=2, ydegrees=2, xordinal=True, yordinal=True)
 model.fit(X, y)
 print(model)                        # SMC, loss, iterations
-pygifi.plot(model, plot_type='transplot')
+
+# Morals uses its own dedicated plot function, not the generic pygifi.plot()
+# dispatcher (which is built for Homals/Princals' result structure)
+from pygifi.visualization.plot import plot_morals
+plot_morals(model.result_)
 ```
 
 ### 4. Available Built-in Datasets
@@ -154,16 +158,18 @@ print(df.head())
 
 ### 5. Categorical Encoding Utilities
 
+`categorical_encode`/`categorical_decode` work on a single column at a time (a `pd.Series`, list, or array):
+
 ```python
 import pygifi
 import pandas as pd
 
-df = pd.DataFrame({'color': ['red', 'blue', 'red'], 'size': ['S', 'L', 'M']})
+colors = pd.Series(['red', 'blue', 'red'])
 
-# Encode strings to integer codes
-encoded, mapping = pygifi.categorical_encode(df)
+# Encode strings to 1-indexed integer codes
+encoded, mapping = pygifi.categorical_encode(colors)
 
-# Decode back to original
+# Decode back to original labels
 decoded = pygifi.categorical_decode(encoded, mapping)
 ```
 
@@ -171,51 +177,41 @@ decoded = pygifi.categorical_decode(encoded, mapping)
 
 ## ⚠️ Important Limitations
 
-- **Out-of-sample prediction is not supported.** The optimal transformations are computed on the entire dataset at once. Calling `model.transform(X_test)` on unseen data will raise `NotImplementedError`. Use `cv_morals()` for cross-validation instead.
-- Results match R's Gifi within floating-point tolerance. Large datasets may show minor differences due to RNG initialization differences.
+- **Homals and Princals do not support out-of-sample projection**, matching R: `model.transform(X)` returns the training-set object scores regardless of what `X` you pass — it does not raise an error, it simply ignores new data. Use `cv_morals()` for cross-validation instead.
+- **Morals does support out-of-sample prediction** via `model.predict(X_new)`, which applies the fitted spline/quantification transforms to new data.
+- Results match R's Gifi within floating-point tolerance on every dataset covered by the parity suite (see [Validation Against R's Gifi](#️-validation-against-rs-gifi)); two known, explained exceptions are documented in `tests/parity/README.md`.
 
 ---
 
 ## ⚖️ Validation Against R's Gifi
 
-This project includes a **3-Phase Automated Validation Suite** that runs both the Python and R Gifi implementations end-to-end, producing extensive comparison reports and plots.
-
-### One-command run (from the project root)
-
-```bash
-python3 compare_test.py
-```
-
-This single command executes all three phases:
-1. **Phase 1: Numerical Accuracy** — Preprocesses datasets, runs PyGifi and R Gifi locally, and performs a category-by-category diff on model outputs tracking discrepancies.
-2. **Phase 2: Distribution Comparison** — Analyzes differences in empirical skewness, kurtosis, and overlays histograms for visual verification inside `validation/results/plots/`.
-3. **Phase 3: Structural PCA Comparison** — Evaluates macro-structural differences via Eigenvalues, Object Scores, and Component Loadings scatter plots.
-
-> **Requirements:** 
-> - R must be installed with `install.packages("Gifi")`.
-> - **Exact Parity (1e-6)** requires compiling the `pygifi_rng` C extension so Python can generate the same initialization stream as R directly:
->   `cd pygifi/rng && python3 setup_rng.py build_ext --inplace`
-
-### Running individual master test scripts
-
-You can also run either side independently to inspect full model output (eigenvalues, loadings, category quantifications, and transformed dataset) for every dataset:
+`tests/parity/` runs pygifi against the real CRAN `Gifi` package on every bundled
+dataset and produces a % difference report plus plots.
 
 ```bash
-# Python side — loops over all datasets in validation/datasets/processed/
-python3 pyGifi_test.py
-# Output: console + validation/results/python_master_report.txt
-
-# R side — same loop
-Rscript Gifi_test.R
-# Output: console + validation/results/r_master_report.txt
+python tests/parity/run_all.py
 ```
 
-Both scripts automatically detect all datasets in `validation/datasets/processed/` — no hardcoded paths.
+This runs, in order:
+1. `generate_r_ground_truth.R` — fits `homals`/`princals` on all 12 classic
+   datasets and `morals` on 3 regression datasets, using the real R package.
+2. `run_python.py` — fits the same models with pygifi on the same data.
+3. `compare.py` — pairs up the two outputs field-by-field, computing a
+   scale-relative % difference and a PASS (<1%) / WARN (<10%) / FAIL verdict.
+4. `plots.py` — one chart per method showing % difference by dataset.
 
-### Adding your own dataset
+> **Requirements:** R installed with `install.packages("Gifi")`, and (optionally,
+> for exact bit-level RNG parity rather than an independent-but-equivalent
+> random start) the `pygifi_rng` C extension:
+> `cd pygifi/rng && python setup_rng.py build_ext --inplace`
 
-1. Drop your CSV into `validation/datasets/`
-2. Run `python3 compare_test.py` — it will be picked up automatically.
+Outputs land in `results/`: `r_ground_truth/`, `python_output/`, and
+`comparison/` hold the raw per-(dataset, method) JSON; `comparison_summary.csv`
+is the one-row-per-run summary; `plots/` has the charts. See
+[`tests/parity/README.md`](tests/parity/README.md) for the full breakdown,
+including the two known, explained non-matches (a non-convergence case and a
+different-local-optimum case on the largest dataset — both documented there
+rather than silently hidden).
 
 ---
 
@@ -225,16 +221,16 @@ Both scripts automatically detect all datasets in `validation/datasets/processed
 # Install dev dependencies
 pip install -e ".[dev]"
 
-# Run all tests (excluding slow R-parity tests)
-pytest tests/ --ignore=tests/test_parity.py -v
+# Run the full suite
+pytest tests/ -v
 
 # Run with coverage
-pytest tests/ --ignore=tests/test_parity.py --cov=pygifi --cov-report=term-missing
+pytest tests/ --cov=pygifi --cov-report=term-missing
 ```
 
 ### Test Fixtures
 
-The `tests/fixtures/` folder contains fixed CSV inputs and R-generated JSON reference outputs used by the parity-oriented test suite. These fixtures make it possible to compare Python results against saved R `Gifi` outputs in a repeatable way without rerunning R for every test case.
+The `tests/fixtures/` folder contains fixed CSV inputs and R-generated JSON reference outputs used by `test_parity.py`. These fixtures make it possible to compare Python results against saved R `Gifi` outputs in a repeatable way without R installed or rerun for every test case. (This is a different, lighter-weight mechanism than `tests/parity/` above — see `tests/parity/README.md` for how the two relate.)
 
 If the reference fixtures ever need to be regenerated from R, use:
 
@@ -245,46 +241,6 @@ Rscript tests/fixtures/generate_fixtures.R
 ## 🤝 Community Guidelines
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs, propose changes, run the test suite, and ask for support.
-
----
-
-## 📊 Analysis / Visualization
-
-The `analysis/` folder is an optional visualization workflow for inspecting **`Princals` only**. It is **not** the main validation pipeline.
-
-Its purpose is to help you visually inspect whether the Python and R `Princals` transformations behave similarly on the same processed datasets. It is useful when you want a human-readable diagnostic view of the transformation quality rather than only numerical pass/fail comparisons.
-
-It reads datasets from `validation/datasets/processed/`, runs Python `Princals`, generates matching R `princals` transforms, and produces the following plot outputs under `analysis/plots/<dataset_name>/`:
-
-- `01_raw_distributions.png`
-  Category-frequency bar charts for each variable in the original dataset.
-- `02_trend_plots.png`
-  Variable-by-variable comparison of raw scaled category codes, PyGifi quantifications, and R Gifi quantifications.
-- `03_pca_plots.png`
-  Separate PCA scatter plots for raw encoded data, Python-transformed data, and R-transformed data.
-- `04_overlapping_pca.png`
-  A single overlaid PCA comparison plot showing all series together.
-- `05_global_transform.png`
-  An overview plot of Python quantification curves across all variables.
-- `06_distribution_comp.png`
-  Overall density comparison of raw, Python-transformed, and R-transformed values.
-
-These plots are meant for:
-
-- checking whether category quantification trends look qualitatively similar across R and Python
-- spotting obvious structural mismatches in transformed geometry
-- visually comparing how much the optimal-scaling transformation changes the original coded data
-- generating presentation-friendly diagnostics for a conversion audit
-
-Run it directly with:
-
-```bash
-python3 analysis/analyze.py
-```
-
-> **Requirements:** R with `install.packages("Gifi")` is needed for the R-side comparison plots. If R is unavailable, the Python-only plots can still be generated.
-
-If you only want the main R-vs-Python validation workflow, use the parity pipeline under `tests/parity/` and `validation/` instead.
 
 ---
 
@@ -316,9 +272,8 @@ pyGifi/
 │   │   ├── utilities.py            ← Matrix manipulation components
 │   │   └── prepspline.py           ← Spline knot pre-processing utilities
 │   │
-│   ├── rng/                        ← C Extension for exact R compatibility
-│   │   ├── rng.c                   ← R's Mersenne-Twister / Normal generation ported to C
-│   │   ├── pygifi_rng.c            ← Python/C API Wrapper
+│   ├── rng/                        ← C extension for exact R RNG compatibility
+│   │   ├── pygifi_rng.c            ← Self-contained port of R's MT19937 + AS241 inversion
 │   │   └── setup_rng.py            ← Build script for the extension
 │   │
 │   ├── visualization/              ← All plotting code
@@ -326,32 +281,18 @@ pyGifi/
 │   │
 │   └── data/                       ← Built-in datasets
 │
-├── validation/                     ← Automated 3-Phase R vs Python Validation Suite
-│   ├── datasets/                   
-│   │   ├── processed/              ← Pre-processed CSVs ready for modeling
-│   │   └── final_dataset/          ← Organized final transformed model outputs
-│   ├── python_scripts/
-│   │   └── run_pygifi.py           ← PyGifi model execution script
-│   ├── r_scripts/
-│   │   └── run_gifi.R              ← R implementation script
-│   ├── compare/                    
-│   │   ├── compare_results.py      ← Phase 1: Numerical Accuracy comparison
-│   │   ├── visualize_distributions.py ← Phase 2: Distribution Comparison
-│   │   └── pca_comparison.py       ← Phase 3: Structural PCA Difference calculation
-│   ├── results/                    ← Summary comparison CSVs and parameter diff txts
-│   ├── preprocess_datasets.py      ← Cleaning raw datasets step
-│   └── report.py                   ← Orchestration of Phases 1 to 3
+├── tests/                          ← Pytest suite (one file per module) + fixtures
+│   ├── fixtures/                   ← Frozen R reference outputs used by test_parity.py
+│   └── parity/                     ← Live R-vs-Python validation pipeline (see its README.md)
+│       ├── manifest.json           ← Datasets/methods covered, single source of truth
+│       ├── generate_r_ground_truth.R
+│       ├── run_python.py
+│       ├── compare.py
+│       ├── plots.py
+│       └── run_all.py              ← Runs all of the above in order
 │
-├── analysis/                       ← Visualization analysis
-│   ├── analyze.py                  ← Optional Princals-only visualization workflow
-│   ├── get_r_transforms.R          ← R helper for Princals transform generation
-│   ├── r_transforms/               ← Auto-generated R transformed CSVs
-│   └── plots/                      ← All generated plots
-│
-├── docs/                           ← Documentation and Jupyter Notebook tutorials
-├── examples/                       ← Standalone worked code examples
-├── tests/                          ← Automated Pytest Suite and parity runners
-├── setup.py / pyproject.toml       ← Package configurations
+├── results/                        ← Output of tests/parity/run_all.py
+├── setup.py / pyproject.toml       ← Package configuration
 └── README.md                       ← This file
 ```
 

@@ -1,0 +1,69 @@
+{
+  "dataset": "galo",
+  "method": "princals",
+  "verdict": "PASS",
+  "detail": "max % diff = 0.1367% (lambda)",
+  "scored_max_pct_diff": 0.13669749091826502,
+  "fields": {
+    "dmeasures": {
+      "n": 20,
+      "max_abs_diff": 0.006577741052198438,
+      "mean_abs_diff": 0.0018116408725370706,
+      "max_pct_diff": 0.8670347032388903,
+      "mean_pct_diff": 0.23879862308818608,
+      "rotation_sensitive": true
+    },
+    "evals": {
+      "n": 5,
+      "max_abs_diff": 0.0028071189069467373,
+      "mean_abs_diff": 0.001382895056759159,
+      "max_pct_diff": 0.13669083564770834,
+      "mean_pct_diff": 0.06733917842016131
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 0.00034572850091496576,
+      "mean_abs_diff": 0.00034572850091496576,
+      "max_pct_diff": 0.04975164031972494,
+      "mean_pct_diff": 0.04975164031972494
+    },
+    "lambda": {
+      "n": 4,
+      "max_abs_diff": 0.0005614519162609466,
+      "mean_abs_diff": 0.00017289120555120593,
+      "max_pct_diff": 0.13669749091826502,
+      "mean_pct_diff": 0.04209406596752903
+    },
+    "loadings": {
+      "n": 10,
+      "max_abs_diff": 0.004752832573744703,
+      "mean_abs_diff": 0.002066445238593795,
+      "max_pct_diff": 0.5456728699395722,
+      "mean_pct_diff": 0.2372486483419327,
+      "rotation_sensitive": true
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 14.0,
+      "mean_abs_diff": 14.0,
+      "max_pct_diff": 11.76470588136431,
+      "mean_pct_diff": 11.76470588136431
+    },
+    "quantifications": {
+      "n": 122,
+      "max_abs_diff": 0.05103961224484858,
+      "mean_abs_diff": 0.000857416767824514,
+      "max_pct_diff": 69.11999894341882,
+      "mean_pct_diff": 1.1611500064262645,
+      "rotation_sensitive": true
+    },
+    "scoremat": {
+      "n": 6450,
+      "max_abs_diff": 0.02486376208749155,
+      "mean_abs_diff": 0.00020421718184268384,
+      "max_pct_diff": 33.67155692665532,
+      "mean_pct_diff": 0.27655953429816554,
+      "rotation_sensitive": true
+    }
+  }
+}
