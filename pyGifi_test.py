@@ -65,22 +65,13 @@ for ds_file in csv_files:
     print(df.head())
 
     # --------------------------------------------------------------
-    # LOAD SHARED INITIALIZATION (for Parity)
-    # --------------------------------------------------------------
-    INIT_PATH = "init_x_r.csv"
-    init_x = None
-    if os.path.exists(INIT_PATH):
-        print(f"\nLoading shared initialization from {INIT_PATH}")
-        init_x = pd.read_csv(INIT_PATH).values
-
-    # --------------------------------------------------------------
     # RUN PRINCALS
     # --------------------------------------------------------------
     print("\n============================================")
     print("Running PRINCALS")
     print("============================================")
 
-    model = Princals(ndim=2, init_x=init_x)
+    model = Princals(ndim=2, r_seed=123)
     model.fit(df)
 
     result = model.result_

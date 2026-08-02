@@ -199,7 +199,7 @@ This single command executes all three phases:
 
 > **Requirements:** 
 > - R must be installed with `install.packages("Gifi")`.
-> - **Exact Parity (1e-6)** requires compiling the `pygifi_rng` C extension representing R's random number generator initial state matrix setup:
+> - **Exact Parity (1e-6)** requires compiling the `pygifi_rng` C extension so Python can generate the same initialization stream as R directly:
 >   `cd pygifi/rng && python3 setup_rng.py build_ext --inplace`
 
 ### Running individual master test scripts

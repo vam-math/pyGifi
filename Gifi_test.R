@@ -44,17 +44,6 @@ for (ds_file in datasets) {
     print(head(df, 5))
 
     # --------------------------------------------------------------
-    # INITIALIZATION EXPORT (for Python Parity)
-    # --------------------------------------------------------------
-    # R's Gifi uses set.seed(123) and rnorm internally. 
-    # We export it for Python to use the exact same start point.
-    set.seed(123)
-    nobs <- nrow(df)
-    ndim <- 2
-    init_x <- matrix(rnorm(nobs * ndim), nobs, ndim)
-    write.csv(init_x, "init_x_r.csv", row.names = FALSE)
-
-    # --------------------------------------------------------------
     # RUN PRINCALS
     # --------------------------------------------------------------
 
@@ -62,6 +51,8 @@ for (ds_file in datasets) {
     cat("Running PRINCALS\n")
     cat("============================================\n")
 
+    ndim <- 2
+    set.seed(123)
     fit <- princals(df, ndim = ndim)
 
     cat("\nEigenvalues:\n")
