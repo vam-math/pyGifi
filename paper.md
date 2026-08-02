@@ -133,12 +133,9 @@ integer-coding.
 
 An AI coding assistant (Claude, Anthropic) was used throughout this
 project's development: diagnosing and fixing the numerical defects described
-above, building the R-vs-Python validation pipeline, cleaning up the
-repository structure, and drafting this paper. No AI-generated claim was
-taken on faith — every code fix was checked against the live CRAN `Gifi`
-package output (not only against pre-existing fixtures), every documentation
-example in this repository was executed to confirm it runs as written, and
-the full test suite was run after each change. The numerical results
+above, cleaning up the repository structure, and drafting this paper. 
+No AI-generated claim was taken on faith — every code fix was checked against the live CRAN `Gifi`
+package output, every documentation example in this repository was executed to confirm it runs as written, and the full test suite was run after each change. The numerical results
 reported in this paper were read directly from the generated comparison
 files (`results/comparison_summary.csv`), not estimated.
 
