@@ -1,52 +1,152 @@
-# pygifi: A Python Implementation of the Gifi System for Optimal Scaling
+---
+title: 'pygifi: A Python Implementation of the Gifi System for Optimal Scaling'
+tags:
+  - Python
+  - optimal scaling
+  - multivariate analysis
+  - categorical data analysis
+  - psychometrics
+authors:
+  - name: Vamanie Perumal
+    affiliation: '1'
+  - name: Sanjeev
+    affiliation: '2'
+  - name: Bhavesh
+    affiliation: '2'
+affiliations:
+  - index: 1
+    name: Indian Institute of Technology Madras, India
+  - index: 2
+    name: Amrita College of Engineering, Chennai, India
+date: 2 August 2026
+bibliography: paper.bib
+---
 
-## Summary
+# Summary
 
-Optimal scaling methods extend classical multivariate analysis to data that are not naturally continuous, including nominal, ordinal, and mixed-type variables. In many empirical settings, researchers work with survey responses, clinical ratings, educational scores, behavioral categories, and other structured observations that cannot be handled appropriately by ordinary principal component analysis, linear regression, or canonical correlation without imposing questionable numeric assumptions. The Gifi system, developed in R, addresses this problem by transforming variables optimally under measurement restrictions and then applying low-dimensional multivariate methods within an alternating least squares framework.
+Optimal scaling extends classical multivariate analysis to data that are not
+naturally continuous: nominal categories, ordinal ratings, and mixed-type
+variables of the kind produced by surveys, clinical instruments, and
+behavioral coding schemes. The Gifi system [@gifi1990; @michailidis1998]
+addresses this by jointly estimating a numeric quantification for every
+category, subject to the variable's measurement level, and a low-dimensional
+representation of the objects being measured, using an alternating least
+squares (ALS) algorithm. This family of methods includes homogeneity analysis
+(comparable to multiple correspondence analysis), optimal-scaling principal
+component analysis, and monotone regression, and has long been implemented in
+R's `Gifi` package [@gifiRpackage].
 
-`pygifi` is a Python implementation of core functionality provided by the R `Gifi` package. The project ports key methods from the Gifi framework into a Python environment while preserving the conceptual structure of optimal scaling, category quantification, ordinal restrictions, spline-based transformations, and iterative estimation. The package provides a native Python interface for methods such as homogeneity analysis (`Homals`), optimal-scaling principal components analysis (`Princals`), monotone regression (`Morals`), and related utilities for coding, spline preparation, cross-validation, visualization, and validation against R outputs.
+`pygifi` is a native Python implementation of the same computational
+framework: `Homals` (homogeneity analysis), `Princals` (optimal-scaling
+PCA), and `Morals` (monotone regression), built on a shared ALS engine that
+handles nominal, ordinal, and spline-based transformations, missing data, and
+tie-breaking rules. It exposes a scikit-learn-compatible `fit`/`transform`
+interface and integrates directly with NumPy, SciPy, pandas, and matplotlib
+[@harris2020numpy; @virtanen2020scipy; @mckinney2010pandas;
+@pedregosa2011scikit], so users already working in Python's data-science
+stack do not need to switch languages or maintain an R subprocess to use
+Gifi-style methods.
 
-The goal of the project is not merely to wrap R functionality but to reproduce the underlying computational workflow in Python so that users in scientific computing, data analysis, and machine learning ecosystems can work with Gifi-style methods directly alongside tools such as NumPy, pandas, SciPy, matplotlib, and scikit-learn. This makes optimal scaling methods more accessible to Python users while also supporting reproducible comparisons between R and Python implementations.
+# Statement of need
 
-## Statement of Need
+Python has become a dominant language for data analysis, but native support
+for the Gifi family of optimal-scaling methods remains limited: researchers
+who need homogeneity analysis, optimal-scaling PCA, or monotone-regression
+modeling typically rely on R's `Gifi` package. This is a real barrier for
+users whose broader pipelines — preprocessing, modeling, visualization — are
+already built in Python, and it complicates reproducibility for projects
+that must combine both languages. `pygifi` is intended for statisticians,
+psychometricians, and social, educational, and health-science researchers
+who work with categorical or mixed-scale data and want optimal scaling
+available natively in Python, as well as for developers who need a
+transparent, inspectable reference implementation to build on, or who need
+optimally-scaled numeric representations of mixed-type data as an input
+stage for downstream methods that require purely numeric input.
 
-Although Python has become a dominant language for data science and machine learning, native support for optimal scaling methods remains limited compared with R. Researchers who want to perform nonlinear principal components analysis, homogeneity analysis, or monotone transformation-based multivariate modeling often rely on the R `Gifi` package or related R implementations. This creates a barrier for users whose broader workflows are already built in Python, especially when they need to integrate preprocessing, modeling, validation, and visualization within a single computational environment.
+# State of the field
 
-A Python implementation is useful for at least three reasons. First, it lowers the practical cost of adopting optimal scaling methods in Python-centered research workflows. Users can remain within the Python ecosystem rather than switching languages or maintaining cross-language bridges. Second, it improves interoperability with widely used Python libraries for machine learning and scientific computing. Third, it supports pedagogical and methodological transparency by making the structure of the algorithms available in a language familiar to a large user base.
+R's `Gifi` package [@gifiRpackage] remains the reference implementation and
+the direct basis for this port. Within Python, the closest existing tool is
+`prince` [@princepackage], which provides multiple correspondence analysis and factor
+analysis of mixed data via direct singular value decomposition of
+(possibly disjunctive-coded) data matrices. That is a different algorithmic
+family from Gifi's iterative ALS optimal scaling, which additionally
+supports spline-based ordinal transformations, explicit tie-breaking rules,
+and monotone regression with an optimally scaled response — `prince` has no
+equivalent of `Morals`. Extending an SVD-based package to cover ALS-based
+optimal scaling would mean replacing its computational core rather than
+adding a method to it, so a dedicated, from-scratch port of the Gifi engine
+was the more direct path to a faithful, verifiable implementation, rather
+than an approximation grafted onto architecturally different existing
+software.
 
-The conversion from R `Gifi` to Python also addresses a reproducibility need. In practice, ports of statistical methods are only credible when they demonstrate agreement with an established reference implementation. For that reason, the project includes parity-oriented validation against the R package, including numerical comparisons of transformed outputs, quantifications, and related model quantities. This is especially important for iterative multivariate procedures, where small differences in initialization, transformation handling, or numerical conventions can produce divergent solutions.
+# Software design
 
-The intended audience includes statisticians, psychometricians, social scientists, educational researchers, health researchers, and method developers who work with categorical or mixed-scale data and want direct access to optimal scaling methods in Python. It is also relevant for developers who need a transparent, inspectable implementation of Gifi-style methods for downstream experimentation or integration.
+`pygifi` decomposes each model into shared infrastructure — data structure
+construction, spline and indicator basis preparation, cone projections for
+nominal/ordinal/spline restrictions, and a common ALS engine — with
+model-specific classes assembling these pieces the way R's `Gifi` does
+internally, rather than re-implementing the ALS loop per model. This
+shared-core design means a fix or extension to the engine benefits every
+model at once, and it made the port independently testable at the component
+level (Gram-Schmidt orthogonalization, isotonic regression, B-spline bases)
+rather than only as an opaque end-to-end fit.
 
-## Implementation
+That testability mattered in practice. A faithful port is only credible if
+it demonstrably agrees with the reference implementation, not merely if it
+exposes a similar API — plausible-looking code can converge to a different
+local optimum, or a subtly wrong default can degrade a result without
+raising any error. Comparing intermediate quantities against live R output
+during development, rather than only final results, surfaced two defects
+that a single end-to-end comparison would have hidden inside compensating
+errors: a spline-knot default in `Morals` that diverged from R's actual
+default, and an alternative majorization solver whose update formula
+violated its own documented monotone-convergence guarantee under unequal
+category sizes. `pygifi` ships the validation pipeline that caught these
+(`tests/parity/`), which runs the real CRAN `Gifi` package and `pygifi` on
+the same twelve bundled datasets using a ported implementation of R's random
+number generator, so both languages start from either an identical or an
+independently-equivalent initial configuration. Of the 24 `Homals`/`Princals`
+runs, 22 match R to under 0.15% relative difference on stress and
+eigenvalues (most at floating-point precision, $10^{-9}$% or below); the
+`Morals` models match to floating-point tolerance across three regression
+datasets. The two remaining cases — one where neither implementation
+converges within the iteration budget, one where both reach a valid but
+different local optimum on the largest dataset — are recorded, not hidden,
+alongside the full comparison in `results/` and documented in
+`tests/parity/README.md`. The full test suite (220 tests) and this pipeline
+run for every change.
 
-`pygifi` is organized around model classes and shared computational infrastructure. At the user level, classes such as `Princals`, `Homals`, and `Morals` expose fit-oriented interfaces that are familiar to Python users. Underneath these model classes, the package constructs Gifi-style data structures, prepares spline and indicator bases, applies ordinal or nominal restrictions, and invokes a shared alternating least squares engine. This design mirrors the conceptual decomposition of the original R framework while adapting it to Pythonic data structures.
+# Research impact statement
 
-The implementation includes support utilities for categorical encoding and decoding, spline knot generation, isotonic and cone-based projections, and cross-validation helpers. Built-in datasets and plotting functions support demonstration and interpretation. The package also includes a dedicated random-number compatibility component used for exact parity-oriented initialization when comparing selected procedures to the R implementation. This is important because iterative optimal scaling methods can be sensitive to starting values.
+`pygifi` is a new package; its immediate evidence of readiness is the
+validation pipeline and test suite described above, its public GitHub
+repository and issue tracker, and this submission itself. Its authors plan
+to use it as a preprocessing stage for Self-Organizing Maps (SOMs), which
+require purely numeric input and have no native mechanism for mixed
+nominal/ordinal/continuous data; `pygifi`'s optimally scaled quantifications
+are intended to supply that numeric representation while preserving each
+variable's measurement-level constraints, in place of ad hoc dummy- or
+integer-coding.
 
-From a software engineering perspective, the project aims to provide more than a one-to-one syntax translation. The conversion required adapting the algorithmic structure to Python's numerical stack, managing differences in data representation, handling categorical encodings in pandas, and reproducing transformation logic in a way that remains inspectable and testable. The resulting implementation is intended to function as a native Python library rather than as a language bridge.
+# AI usage disclosure
 
-## Validation and Testing
+An AI coding assistant (Claude, Anthropic) was used throughout this
+project's development: diagnosing and fixing the numerical defects described
+above, building the R-vs-Python validation pipeline, cleaning up the
+repository structure, and drafting this paper. No AI-generated claim was
+taken on faith — every code fix was checked against the live CRAN `Gifi`
+package output (not only against pre-existing fixtures), every documentation
+example in this repository was executed to confirm it runs as written, and
+the full test suite was run after each change. The numerical results
+reported in this paper were read directly from the generated comparison
+files (`results/comparison_summary.csv`), not estimated.
 
-Because this project is a methodological port, validation is central to its contribution. The repository includes automated tests for core numerical utilities, model behavior, and parity-oriented checks. In addition to unit tests for internal components such as linear algebra helpers, coding utilities, isotonic procedures, and spline functions, the project includes comparisons against the R `Gifi` implementation for selected workflows.
+# Acknowledgements
 
-This validation strategy serves two purposes. First, it checks internal correctness of the Python implementation at the component level. Second, it evaluates whether the Python outputs are consistent with the established R reference for practically meaningful model results such as category quantifications, transformed datasets, and eigenvalue-based summaries. This kind of validation is particularly valuable for a porting project because correctness cannot be assessed solely by API similarity; it must be supported by numerical agreement and behavioral consistency.
+We thank the authors of the original R `Gifi` package — Patrick Mair, Jan De
+Leeuw, and Patrick J. F. Groenen — whose implementation and documentation
+made this port possible, and the broader line of work on alternating least
+squares optimal scaling [@deleeuw1977] that the Gifi system builds on.
 
-## Comparison to Existing Software
-
-The main point of comparison for `pygifi` is the R `Gifi` package, which remains the primary reference implementation for these methods. The original package provides a mature environment for optimal scaling techniques and has long served as an important resource for researchers working with categorical multivariate data. However, its use requires working in R, which limits direct integration with Python-first analysis pipelines.
-
-To the best of this project's design goals, `pygifi` fills the gap of a native Python implementation rather than offering a wrapper around R. This distinction matters for usability, portability, and long-term maintainability. A wrapper would still require an R runtime and would reduce transparency for Python users. A native implementation, by contrast, can be inspected, extended, tested, and integrated within standard Python workflows.
-
-The contribution of `pygifi` is therefore not novelty in the statistical methods themselves, which originate in the Gifi framework, but accessibility, interoperability, and reproducibility in a Python setting. In that sense, the project complements rather than replaces the original R package: R `Gifi` remains the methodological reference, while `pygifi` provides Python users with direct access to the same class of tools.
-
-## Conclusion
-
-`pygifi` brings the Gifi system of optimal scaling methods into Python through a native implementation of key models, shared computational components, and validation workflows against the established R package. The project addresses a practical and methodological need for Python users who work with categorical, ordinal, and mixed-type data and want access to optimal scaling methods without leaving the Python ecosystem. By combining model implementations, supporting utilities, and parity-oriented validation, the package provides a foundation for broader use, further development, and reproducible application of Gifi methods in Python.
-
-## Placeholders To Complete Before Submission
-
-- Add the final author list and affiliations.
-- Add the archived software DOI.
-- Add citations to the original `Gifi` package and core methodological references.
-- Add any published or in-progress applications of `pygifi`, if available.
+# References

@@ -9,7 +9,9 @@ description = "Python port of the R Gifi library for Multivariate Analysis with 
 readme = "README.md"
 license = "GPL-3.0-or-later"
 authors = [
-    {name = "Sanjeev", email = "sanjeev06-cyber@users.noreply.github.com"}
+    {name = "Vamanie Perumal"},
+    {name = "Sanjeev", email = "sanjeev06-cyber@users.noreply.github.com"},
+    {name = "Bhavesh"}
 ]
 keywords = [
     "optimal scaling",
@@ -66,7 +68,7 @@ ignore_missing_imports = true
 
 [project.urls]
 Homepage = "https://github.com/vam-math/pyGifi"
-Documentation = "https://github.com/vam-math/pyGifi/blob/main/docs/tutorial.md"
+Documentation = "https://github.com/vam-math/pyGifi/blob/main/README.md"
 "Bug Tracker" = "https://github.com/vam-math/pyGifi/issues"
 "Original R Package" = "https://cran.r-project.org/package=Gifi"
 
