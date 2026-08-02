@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-analyze.py — Professor's analysis: raw distributions, trend plots, and PCA plots
+analyze.py — analysis: raw distributions, trend plots, and PCA plots
 comparing raw data, PyGifi-transformed, and R-Gifi-transformed datasets.
 
 Usage (from project root):
