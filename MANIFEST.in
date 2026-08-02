@@ -1,0 +1,29 @@
+# MANIFEST.in — controls what gets bundled in the source distribution (sdist)
+
+# Include documentation
+recursive-include docs *.md *.rst
+
+# Include Jupyter example notebooks
+recursive-include examples *.ipynb
+
+# Include test fixtures (R scripts + JSON reference data)
+recursive-include tests *.R *.json *.csv
+
+# Include bundled datasets
+recursive-include pygifi *.csv *.json
+
+# Include project metadata files
+include README.md
+include LICENSE
+include CHANGELOG.md
+include pyproject.toml
+include setup.py
+
+# Exclude build artifacts and caches
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.so
+global-exclude .DS_Store
+prune dist
+prune build
+prune .git

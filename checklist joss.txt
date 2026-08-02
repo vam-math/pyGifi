@@ -1,0 +1,50 @@
+Here's a JOSS-specific checklist, pulled from JOSS's actual review criteria and tailored to your R→Python optimal scaling port. Go through it honestly — the gaps you find are exactly what would come up in review anyway.
+
+## 1. Eligibility gate (check this first — it's binary)
+
+- [ ] **Substantial scholarly effort.** JOSS's own rule of thumb: not less than ~3 months of individual work. Signals reviewers look at: commit history length, number of commits, lines of code, whether it's already been used/cited. A straight syntax-for-syntax port usually *doesn't* clear this bar on its own — but given you said the math (ALS optimization, spline transformations, rank/level restrictions) required real rework, you're likely fine. Be ready to articulate *what was hard*, not just that it was ported.
+- [ ] **Not "just a wrapper."** If any part of your package calls back into R (via `rpy2`) rather than being a native Python implementation, this weakens your case significantly.
+- [ ] **Novelty relative to prior art is not required** — JOSS explicitly accepts software that reimplements something already solved elsewhere, *provided you cite the original* (`homals`, `Gifi`, de Leeuw & Mair 2009, Michailidis & de Leeuw 1998, etc.). This is good news for you.
+
+## 2. Repository requirements
+
+- [ ] Source code publicly available at a repo URL (GitHub/GitLab/etc.)
+- [ ] Plain-text `LICENSE` file with an OSI-approved license in the repo root
+- [ ] A tagged release whose version matches what's cited in the paper
+- [ ] Archived snapshot with a DOI (Zenodo/Software Heritage) at time of acceptance — not needed at submission, but needed before publication
+
+## 3. Authorship
+
+- [ ] Submitting author made major contributions to the software (not just the paper)
+- [ ] Full author list is appropriate/complete — decide now if anyone else (e.g., someone who helped validate against the R output, or an advisor) merits co-authorship
+
+## 4. Documentation
+
+- [ ] Clear installation instructions (pip-installable ideally)
+- [ ] Example usage solving a real analysis problem (not just a toy `import` line) — a worked CATPCA/homogeneity-analysis example on a real or classic dataset (e.g., something like the `galo` dataset used in the R vignette) would be strong here
+- [ ] API/function-level documentation for core functionality
+- [ ] Community guidelines: how to contribute, report issues, get support (a `CONTRIBUTING.md` + issue templates covers this)
+
+## 5. Testing — reviewers will actually run this
+
+- [ ] Automated test suite, ideally hooked to CI (GitHub Actions etc.)
+- [ ] **The single highest-value thing you can do for this specific project**: numerical parity tests against the R package. Run the same datasets through `homals`/`Gifi` in R and your Python port, and assert your outputs match (eigenvalues, category quantifications, transformation functions) to a stated tolerance. This is what made ports like PyDESeq2/InMoose credible, and it doubles as your test suite *and* your validation evidence.
+
+## 6. The paper itself (`paper.md`)
+
+Required sections:
+- [ ] **Summary** — high-level description for a non-specialist audience
+- [ ] **Statement of need** — explicitly required section title. This is where you argue: optimal scaling / Gifi-system methods exist only in R; Python users in [your target field] currently have no native option; here's who needs this and why
+- [ ] **Comparison to existing software** — position against `homals`/`Gifi` in R (and note absence of Python alternatives, based on what I could find)
+- [ ] Mentions of any research already using the software, if applicable
+- [ ] List of key references (BibTeX), including a link to the archived software
+- [ ] List of authors + affiliations
+- [ ] **Note:** the paper should *not* contain API documentation — that belongs in the software docs, not the paper. Keep the JOSS paper short (JOSS targets ~250–1000 words); save the algorithmic exposition for a possible companion JSS/methods paper as discussed before.
+
+## 7. Realistic self-assessment questions
+
+- [ ] Could an independent reviewer install your package and reproduce a nontrivial example within an hour?
+- [ ] If a reviewer is skeptical this is "just a port," what's your one-sentence answer for what required genuine effort beyond translation?
+- [ ] Is there anyone in the Gifi/optimal-scaling community (e.g., people citing homals/Gifi) who'd plausibly use or cite this?
+
+If you want, paste your repo (or describe its current state) and I'll go through this checklist against it item by item to flag what's missing before you submit.
