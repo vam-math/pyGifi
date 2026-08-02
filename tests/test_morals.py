@@ -79,7 +79,7 @@ def test_morals_get_params():
         'xknots', 'yknots', 'xdegrees', 'ydegrees',
         'xordinal', 'yordinal', 'xties', 'yties',
         'xmissing', 'ymissing', 'xactive', 'xcopies',
-        'itmax', 'eps', 'verbose', 'init_x', 'optimizer'
+        'itmax', 'eps', 'verbose', 'init_x', 'r_seed', 'optimizer'
     }
     assert set(params.keys()) == expected_keys
 

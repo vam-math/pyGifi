@@ -1,0 +1,29 @@
+{
+  "classic_datasets": [
+    "ABC", "WilPat2", "galo", "gubell", "hartigan",
+    "house", "mammals", "neumann", "roskam", "senate07",
+    "sleeping", "small"
+  ],
+  "classic_methods": ["homals", "princals"],
+  "morals_runs": [
+    {
+      "name": "neumann",
+      "file": "pygifi/data/neumann.csv",
+      "x_cols": [0, 1],
+      "y_col": 2
+    },
+    {
+      "name": "goldstein",
+      "file": "pygifi/data/Goldstein Problem.xlsx",
+      "x_cols": [0, 1],
+      "y_col": 2
+    },
+    {
+      "name": "rosenbrock",
+      "file": "pygifi/data/rosenbrock.xlsx",
+      "x_cols": [0, 1],
+      "y_col": 2
+    }
+  ],
+  "r_seed": 123
+}

@@ -121,10 +121,13 @@ class Morals(BaseEstimator, TransformerMixin):  # type: ignore
         xactive_v = reshape(self.xactive, npred)  # type: ignore
         xcopies_v = reshape(self.xcopies, npred)  # type: ignore
 
-        # Default knots
+        # Default knots.
+        # R: morals(x, y, xknots = knotsGifi(x, "Q"), yknots = knotsGifi(y, "Q"), ...)
+        # i.e. quantile knots with knotsGifi's own default of 3 interior knots —
+        # not "E" (zero interior knots), which under-fits relative to R.
         if self.xknots is None:
             xknots = [
-                knots_gifi(X.iloc[:, [i]], type="E", n=None)[0]  # type: ignore
+                knots_gifi(X.iloc[:, [i]], type="Q", n=3)[0]  # type: ignore
                 for i in range(npred)
             ]
         else:
@@ -134,8 +137,8 @@ class Morals(BaseEstimator, TransformerMixin):  # type: ignore
             yknots = [
                 knots_gifi(
                     pd.DataFrame(y),
-                    type="E",
-                    n=None)[0]]  # type: ignore
+                    type="Q",
+                    n=3)[0]]  # type: ignore
         else:
             yknots = self.yknots
 

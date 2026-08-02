@@ -29,3 +29,13 @@ diag_output.txt
 # IDE
 .idea/
 .vscode/
+
+# R Gifi 
+Gifi-master/
+
+uv.lock
+
+.claude/
+.github/
+.pytest_cache/  
+tests/__pycache__/

@@ -294,9 +294,11 @@ def cor_list(matrices):
     np.ndarray — correlation matrix of shape (sum(k_i), sum(k_i))
     """
     h = np.concatenate(matrices, axis=1)
-    # R: corList(x) -> rhat[i, j] = sum(v[[i]] * v[[j]])
-    # Since our transforms are centered and unit-normalized (sum(v^2)=1),
-    # their inner product is exactly the correlation.
+    # Centering + unit-normalizing each column first makes the inner product
+    # h.T @ h exactly equal cor(cbind(...)), matching R regardless of whether
+    # the caller's columns were already centered/normalized (Gifi transforms
+    # already are, so this is a no-op for them up to floating point).
+    h = normalize(center(h))
     return h.T @ h
 
 

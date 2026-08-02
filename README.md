@@ -18,12 +18,6 @@ Gifi methods are a family of algorithms that find the best numerical representat
 | Homogeneity Analysis | `Homals` | Like Multiple Correspondence Analysis (MCA). Finds groups and patterns in categorical data. |
 | Optimal Scaling PCA | `Princals` | Like PCA but works on any mix of nominal, ordinal, and numeric variables. |
 | Monotone Regression | `Morals` | Like linear regression but the predictors/response are optimally transformed (monotone). |
-| Correlational Analysis | `Corals` | Maximizes correlation between two sets of variables. |
-| Canonical Analysis | `Canals` | Canonical correlation with optimal scaling. |
-| Discriminant Analysis | `Criminals` | Nonlinear discriminant analysis. |
-| Multiset Analysis | `Overals` | Generalizes Homals/Corals to multiple sets. |
-| Primal Analysis | `Primals` | Regression with metric response. |
-| Additive Analysis | `Addals` | Additive models with optimal scaling. |
 | Missing Data Imputation | `GifiIterativeImputer` | Iterative imputation oriented to the Gifi framework. |
 
 **Additional utilities:**
@@ -238,6 +232,16 @@ pytest tests/ --ignore=tests/test_parity.py -v
 pytest tests/ --ignore=tests/test_parity.py --cov=pygifi --cov-report=term-missing
 ```
 
+### Test Fixtures
+
+The `tests/fixtures/` folder contains fixed CSV inputs and R-generated JSON reference outputs used by the parity-oriented test suite. These fixtures make it possible to compare Python results against saved R `Gifi` outputs in a repeatable way without rerunning R for every test case.
+
+If the reference fixtures ever need to be regenerated from R, use:
+
+```bash
+Rscript tests/fixtures/generate_fixtures.R
+```
+
 ## 🤝 Community Guidelines
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs, propose changes, run the test suite, and ask for support.
@@ -246,26 +250,41 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs, propose ch
 
 ## 📊 Analysis / Visualization
 
-We provide tools for generating comparison plots against R, as well as standalone batch analysis tools.
+The `analysis/` folder is an optional visualization workflow for inspecting **`Princals` only**. It is **not** the main validation pipeline.
 
-### R Comparison Plots
+Its purpose is to help you visually inspect whether the Python and R `Princals` transformations behave similarly on the same processed datasets. It is useful when you want a human-readable diagnostic view of the transformation quality rather than only numerical pass/fail comparisons.
 
-Generate three types of comparative plots (`01_raw_distributions.png`, `02_trend_plots.png`, `03_pca_plots.png`) using:
+It reads datasets from `validation/datasets/processed/`, runs Python `Princals`, generates matching R `princals` transforms, and produces the following plot outputs under `analysis/plots/<dataset_name>/`:
+
+- `01_raw_distributions.png`
+  Category-frequency bar charts for each variable in the original dataset.
+- `02_trend_plots.png`
+  Variable-by-variable comparison of raw scaled category codes, PyGifi quantifications, and R Gifi quantifications.
+- `03_pca_plots.png`
+  Separate PCA scatter plots for raw encoded data, Python-transformed data, and R-transformed data.
+- `04_overlapping_pca.png`
+  A single overlaid PCA comparison plot showing all series together.
+- `05_global_transform.png`
+  An overview plot of Python quantification curves across all variables.
+- `06_distribution_comp.png`
+  Overall density comparison of raw, Python-transformed, and R-transformed values.
+
+These plots are meant for:
+
+- checking whether category quantification trends look qualitatively similar across R and Python
+- spotting obvious structural mismatches in transformed geometry
+- visually comparing how much the optimal-scaling transformation changes the original coded data
+- generating presentation-friendly diagnostics for a conversion audit
+
+Run it directly with:
 
 ```bash
-python3 plot.py
+python3 analysis/analyze.py
 ```
 
-> **Requirements:** R with `install.packages("Gifi")`. If R is unavailable, plots are generated for Raw and PyGifi only.
+> **Requirements:** R with `install.packages("Gifi")` is needed for the R-side comparison plots. If R is unavailable, the Python-only plots can still be generated.
 
-### Batch Model Analysis (master_analysis.py)
-
-If you just want to run PyGifi models (`Homals`, `Princals`, `Morals`) on multiple datasets and automatically generate visualization plots (Biplots, Transplots, Screeplots) without concerning yourself with R comparisons:
-
-```bash
-python3 master_analysis.py
-```
-This script loops over all datasets in the project, fits corresponding Gifi models, and drops all output plots directly into `results/master_analysis/plots/`.
+If you only want the main R-vs-Python validation workflow, use the parity pipeline under `tests/parity/` and `validation/` instead.
 
 ---
 
@@ -281,12 +300,6 @@ pyGifi/
 │   │   ├── homals.py               ← Homals: homogeneity analysis (MCA-style)
 │   │   ├── princals.py             ← Princals: optimal scaling PCA
 │   │   ├── morals.py               ← Morals: monotone regression
-│   │   ├── corals.py               ← Corals: correlation analysis
-│   │   ├── canals.py               ← Canals: canonical analysis
-│   │   ├── criminals.py            ← Criminals: discriminant analysis
-│   │   ├── overals.py              ← Overals: multi-set analysis
-│   │   ├── primals.py              ← Primals: metric regression
-│   │   ├── addals.py               ← Addals: additive analysis
 │   │   └── impute.py               ← GifiIterativeImputer: missing value imputation
 │   │
 │   ├── core/                       ← Engine internals
@@ -329,22 +342,15 @@ pyGifi/
 │   ├── preprocess_datasets.py      ← Cleaning raw datasets step
 │   └── report.py                   ← Orchestration of Phases 1 to 3
 │
-├── compare_test.py                 ← Launcher: Runs the 3-Phase validation pipeline
-├── master_analysis.py              ← Batch Tool: Runs Homals/Princals/Morals on datasets + plots
-├── pyGifi_test.py                  ← Standalone test: Print PyGifi outputs
-├── Gifi_test.R                     ← Standalone test: Print R Gifi outputs
-├── diag_gifi.R                     ← Diagnostics test inside R directly
-├── plot.py                         ← Compare dataset structures via auto-generated R overlays
-│
 ├── analysis/                       ← Visualization analysis
-│   ├── analyze.py                  ← Main analysis script
-│   ├── get_r_transforms.R          ← R helper: runs Gifi Princals
+│   ├── analyze.py                  ← Optional Princals-only visualization workflow
+│   ├── get_r_transforms.R          ← R helper for Princals transform generation
 │   ├── r_transforms/               ← Auto-generated R transformed CSVs
 │   └── plots/                      ← All generated plots
 │
 ├── docs/                           ← Documentation and Jupyter Notebook tutorials
 ├── examples/                       ← Standalone worked code examples
-├── tests/                          ← Automated Pytest Suite (ignores slow parity by default)
+├── tests/                          ← Automated Pytest Suite and parity runners
 ├── setup.py / pyproject.toml       ← Package configurations
 └── README.md                       ← This file
 ```

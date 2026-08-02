@@ -341,7 +341,7 @@ def dykstra(target, basis, data, ties, itmax=1000, eps=1e-6):
     return (x1 + x2) / 2
 
 
-def monotone_regression(Z, x_ord):
+def monotone_regression(Z, x_ord, weights=None):
     """
     Enforce monotone (isotone) ordering on category quantifications Z.
 
@@ -356,6 +356,15 @@ def monotone_regression(Z, x_ord):
     x_ord : array-like of shape (n_categories,)
         Ordinal rank values for each category (e.g., [1, 2, 3]).
         Quantifications will be forced non-decreasing along this ordering.
+    weights : array-like of shape (n_categories,), optional
+        Per-category weights (typically observation counts n_c). Z here is
+        already a per-category *mean* (H^T H)^-1 H^T X A^T, so it is the
+        exact minimizer of sum_c n_c * (z_c - Z[c])^2 subject to monotonicity
+        only when PAVA pools adjacent violators using these same n_c weights.
+        Omitting them (equivalent to weights=1) is only correct when every
+        category has the same number of observations; otherwise it silently
+        returns a suboptimal (non-minimizing) monotone solution. Defaults to
+        uniform weights for backward compatibility.
 
     Returns
     -------
@@ -368,8 +377,12 @@ def monotone_regression(Z, x_ord):
     if Z.ndim == 1:
         Z = Z[:, None]
 
+    order = np.argsort(x_ord, kind='stable')
+    w = np.ones(Z.shape[0]) if weights is None else np.asarray(weights, dtype=float)[order]
+
     Z_mono = Z.copy()
     for j in range(Z.shape[1]):
-        Z_mono[:, j] = isotone(x=x_ord, y=Z[:, j], ties='s')
+        pooled = pava(Z[order, j], w)
+        Z_mono[order, j] = pooled
 
     return Z_mono

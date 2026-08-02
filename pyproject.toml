@@ -73,3 +73,9 @@ Documentation = "https://github.com/vam-math/pyGifi/blob/main/docs/tutorial.md"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["pygifi*"]
+
+[dependency-groups]
+dev = [
+    "openpyxl>=3.1.5",
+    "setuptools>=82.0.1",
+]

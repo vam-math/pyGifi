@@ -500,6 +500,25 @@ def gifi_als(X_init, H_list, A_list, max_iter=1000, tol=1e-6, ridge_penalty=1e-8
         HTH += ridge_penalty * np.eye(HTH.shape[0])
         HTH_inv.append(np.linalg.pinv(HTH))
 
+    # Precompute (A_j A_j^T)^{-1} for each variable. Minimizing
+    # ||X - H_j Z_j A_j||^2 over the full Z_j matrix (n_cats x jcopies) is a
+    # bilinear least-squares problem whose normal equations are
+    # (H_j^T H_j) Z_j (A_j A_j^T) = H_j^T X A_j^T — solving for Z_j requires
+    # multiplying by (A_j A_j^T)^{-1} on the right, not just (H_j^T H_j)^{-1}
+    # on the left. Omitting it is only correct when A_j A_j^T happens to be I
+    # (e.g. a single unit-norm copy row), and silently biases Z_j otherwise.
+    AAT_inv = [np.linalg.pinv(Aj @ Aj.T) for Aj in A_list]
+
+    # Precompute per-category observation counts n_c = column sums of H_j.
+    # Z_j (pre-PAVA) is a per-category *mean*, so it is the exact minimizer
+    # of sum_c n_c*(z_c - Z_j[c])^2 s.t. monotonicity only if PAVA pools
+    # adjacent violators weighted by these same n_c — unweighted PAVA is only
+    # correct when every category happens to have the same count.
+    cat_counts = [
+        np.asarray((Hj.toarray() if hasattr(Hj, 'toarray') else Hj).sum(axis=0)).ravel()
+        for Hj in H_list
+    ]
+
     Z_list = [None] * n_vars
     stress_history = []
     ordinal = ordinal if ordinal is not None else [False] * n_vars
@@ -516,15 +535,15 @@ def gifi_als(X_init, H_list, A_list, max_iter=1000, tol=1e-6, ridge_penalty=1e-8
             # H_j^T X A_j^T
             HT_X_AT = Hj.T @ X @ Aj.T
 
-            # Z_j = (H_j^T H_j + lambda I)^-1 H_j^T X A_j^T
-            Z_list[j] = HTH_inv[j] @ HT_X_AT
+            # Z_j = (H_j^T H_j)^-1 H_j^T X A_j^T (A_j A_j^T)^-1
+            Z_list[j] = HTH_inv[j] @ HT_X_AT @ AAT_inv[j]
 
             # 2.5 Apply PAVA monotone constraint for ordinal variables
             if ordinal[j]:
                 from pygifi.utils.isotone import monotone_regression
                 n_cats = Z_list[j].shape[0]
                 x_ord = np.arange(1, n_cats + 1, dtype=float)
-                Z_list[j] = monotone_regression(Z_list[j], x_ord)
+                Z_list[j] = monotone_regression(Z_list[j], x_ord, weights=cat_counts[j])
 
         # 3. Update object scores X
         X_new = np.zeros_like(X)
@@ -560,14 +579,26 @@ def gifi_majorization(X_init, H_list, A_list, max_iter=1000, tol=1e-6,
 
     Algorithm (SMACOF/Gifi-style majorization):
         1. Initialize X with SVD orthogonalization.
-        2. Update Z_j via ALS (same as gifi_als).
-        2.5 Apply PAVA monotone constraint if ordinal[j] = True.
-        3. Guttman transform: X_new = (1/J) * sum_j (H_j @ Z_j @ A_j)
-           This step is the exact closed-form minimizer of the majorizing
-           surrogate, guaranteeing stress(X_new) <= stress(X_old).
-        4. SVD-orthogonalize X_new to enforce X^T X = I.
+        2. Update Z_j via ALS on the current (orthonormal) X — for each j,
+           this is the exact constrained minimizer of ||X - H_j Z_j A_j||^2
+           over Z_j, so it cannot increase stress.
+        2.5 Apply PAVA monotone constraint if ordinal[j] = True (still the
+           exact constrained minimizer over the isotonic cone).
+        3. Guttman transform: X_new = (1/J) * sum_j (H_j @ Z_j @ A_j).
+           Averaging is the unconstrained minimizer of sum_j ||X - H_j Z_j A_j||^2
+           over X; minimizing that same sum subject to X being centered with
+           orthonormal columns (X^T X = I) is then exactly the orthogonal
+           Procrustes projection of X_new onto that manifold — center, then
+           SVD-orthogonalize (`svd_orthogonalize`). This is *not* interchangeable
+           with a scalar Frobenius-norm rescale: rescaling by an arbitrary factor
+           after computing the unconstrained optimum is not a constrained
+           minimizer and can (and does) increase stress.
+        4. Project X_new via `svd_orthogonalize` (center + SVD Procrustes) to
+           enforce X^T X = I — the exact constrained minimizer, guaranteeing
+           stress(X_new) <= stress(X_old).
         5. Compute stress.
-        6. Emit RuntimeWarning if stress increased (numerical noise).
+        6. Emit RuntimeWarning if stress increases (should only ever be
+           floating-point noise now that the projection step is exact).
         7. Repeat until |stress_prev - stress_new| < tol.
 
     Parameters
@@ -600,7 +631,6 @@ def gifi_majorization(X_init, H_list, A_list, max_iter=1000, tol=1e-6,
     from pygifi.utils.utilities import svd_orthogonalize
 
     X = svd_orthogonalize(np.asarray(X_init).copy())
-    n_samples = X.shape[0]
     n_vars = len(H_list)
     ordinal = ordinal if ordinal is not None else [False] * n_vars
 
@@ -612,6 +642,19 @@ def gifi_majorization(X_init, H_list, A_list, max_iter=1000, tol=1e-6,
         HTH = HTH.astype(float) + ridge_penalty * np.eye(HTH.shape[0])
         HTH_inv.append(np.linalg.pinv(HTH))
 
+    # Precompute (A_j A_j^T)^{-1} for each variable — see gifi_als for the
+    # derivation. Needed so Z_j is the exact minimizer of ||X - H_j Z_j A_j||^2;
+    # skipping it only happens to be harmless when A_j A_j^T == I.
+    AAT_inv = [np.linalg.pinv(Aj @ Aj.T) for Aj in A_list]
+
+    # Precompute per-category observation counts n_c — see gifi_als for why
+    # unweighted PAVA on unequal category sizes is not the exact constrained
+    # minimizer (breaking the monotone-descent guarantee this function makes).
+    cat_counts = [
+        np.asarray((Hj.toarray() if hasattr(Hj, 'toarray') else Hj).sum(axis=0)).ravel()
+        for Hj in H_list
+    ]
+
     Z_list = [None] * n_vars
     stress_history = []
 
@@ -620,16 +663,13 @@ def gifi_majorization(X_init, H_list, A_list, max_iter=1000, tol=1e-6,
 
     for it in range(max_iter):
 
-        # 1. JS normalise X at the start (centre + ||X||_F = sqrt(n_samples))
-        X_c = X - X.mean(axis=0)
-        frob = np.linalg.norm(X_c, 'fro')
-        scale = np.sqrt(n_samples) / frob if frob > 1e-15 else 1.0
-        X = X_c * scale
-
-        # 2. Update Z_j via ALS on the normalised X
+        # 1. Update Z_j via ALS on the current, already-orthonormal X.
+        # (X entering this loop always satisfies X^T X = I: either from the
+        # initial svd_orthogonalize call above, or from step 3 of the
+        # previous iteration — so no re-normalization is needed here.)
         for j in range(n_vars):
             Hj, Aj = H_list[j], A_list[j]
-            Z_list[j] = HTH_inv[j] @ (Hj.T @ X @ Aj.T)
+            Z_list[j] = HTH_inv[j] @ (Hj.T @ X @ Aj.T) @ AAT_inv[j]
 
             # 2.5 Optional PAVA isotone constraint (ordinal variables)
             if ordinal[j]:
@@ -637,7 +677,8 @@ def gifi_majorization(X_init, H_list, A_list, max_iter=1000, tol=1e-6,
                 n_cats = Z_list[j].shape[0]
                 Z_list[j] = monotone_regression(
                     Z_list[j],
-                    np.arange(1, n_cats + 1, dtype=float)
+                    np.arange(1, n_cats + 1, dtype=float),
+                    weights=cat_counts[j],
                 )
 
         # 3. Guttman transform: X_new = (1/J) * sum_j H_j Z_j A_j
@@ -650,16 +691,14 @@ def gifi_majorization(X_init, H_list, A_list, max_iter=1000, tol=1e-6,
             X_new += contrib
         X_new /= n_vars
 
-        # 4. JS normalise X_new: centre + set ||X||_F = sqrt(n_samples).
-        # This rescales X to a fixed magnitude so that stress values are
-        # comparable across iterations — measured on the same X that will be
-        # used for the next Z update.
-        X_c = X_new - X_new.mean(axis=0)
-        frob = np.linalg.norm(X_c, 'fro')
-        scale = np.sqrt(n_samples) / frob if frob > 1e-15 else 1.0
-        X = X_c * scale
+        # 4. Project X_new onto the X^T X = I manifold via the orthogonal
+        # Procrustes solution (center, then SVD-orthogonalize). This is the
+        # *exact* constrained minimizer of ||X - X_new||_F^2 subject to
+        # X^T X = I — unlike a scalar Frobenius-norm rescale, it cannot
+        # increase stress relative to the unconstrained optimum X_new.
+        X = svd_orthogonalize(X_new)
 
-        # 5. Measure stress on the JS-normalised X
+        # 5. Measure stress on the newly projected X
         current_stress = gifi_loss(X, Z_list, H_list, A_list)
         stress_history.append(current_stress)
 
