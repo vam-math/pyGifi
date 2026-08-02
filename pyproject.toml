@@ -65,9 +65,9 @@ strict = true
 ignore_missing_imports = true
 
 [project.urls]
-Homepage = "https://github.com/honey-of-blood/pyGifi"
-Documentation = "https://github.com/honey-of-blood/pyGifi/blob/main/docs/tutorial.md"
-"Bug Tracker" = "https://github.com/honey-of-blood/pyGifi/issues"
+Homepage = "https://github.com/vam-math/pyGifi"
+Documentation = "https://github.com/vam-math/pyGifi/blob/main/docs/tutorial.md"
+"Bug Tracker" = "https://github.com/vam-math/pyGifi/issues"
 "Original R Package" = "https://cran.r-project.org/package=Gifi"
 
 [tool.setuptools.packages.find]

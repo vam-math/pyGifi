@@ -28,7 +28,7 @@ If you have R and the `Gifi` package installed, you can also run the parity chec
 
 Please open a GitHub issue at:
 
-`https://github.com/honey-of-blood/pyGifi/issues`
+`https://github.com/vam-math/pyGifi/issues`
 
 When possible, include:
 

@@ -2,7 +2,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-green.svg)](https://opensource.org/licenses/GPL-3.0)
-[![CI](https://github.com/honey-of-blood/pyGifi/actions/workflows/ci.yml/badge.svg)](https://github.com/honey-of-blood/pyGifi/actions/workflows/ci.yml)
+[![CI](https://github.com/vam-math/pyGifi/actions/workflows/ci.yml/badge.svg)](https://github.com/vam-math/pyGifi/actions/workflows/ci.yml)
 
 **pygifi** is a Python port of the R [Gifi package](https://cran.r-project.org/package=Gifi) by Mair, De Leeuw, and Groenen.  
 It brings **multivariate analysis with optimal scaling** to Python — handling categorical, ordinal, and mixed-type data natively in a scikit-learn compatible API.
@@ -46,7 +46,7 @@ Gifi methods are a family of algorithms that find the best numerical representat
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/honey-of-blood/pyGifi.git
+git clone https://github.com/vam-math/pyGifi.git
 cd pyGifi
 
 # 2. (Optional but recommended) create a virtual environment
