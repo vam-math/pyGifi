@@ -5,7 +5,7 @@ tags:
   - optimal scaling
   - multivariate analysis
   - categorical data analysis
-  - psychometrics
+  - computational mathematics 
 authors:
   - name: Vamanie Perumal
     affiliation: '1'
