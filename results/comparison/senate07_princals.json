@@ -1,0 +1,69 @@
+{
+  "dataset": "senate07",
+  "method": "princals",
+  "verdict": "PASS",
+  "detail": "max % diff = 8.785e-10% (lambda)",
+  "scored_max_pct_diff": 8.784972642860076e-10,
+  "fields": {
+    "dmeasures": {
+      "n": 84,
+      "max_abs_diff": 4.8648862716049734e-12,
+      "mean_abs_diff": 1.0575260041905212e-12,
+      "max_pct_diff": 5.299213841677947e-10,
+      "mean_pct_diff": 1.1519398659019317e-10,
+      "rotation_sensitive": true
+    },
+    "evals": {
+      "n": 21,
+      "max_abs_diff": 4.402700426453521e-11,
+      "mean_abs_diff": 4.795002936375248e-12,
+      "max_pct_diff": 3.797692301523341e-10,
+      "mean_pct_diff": 4.1360855778058546e-11
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 3.3244518249375687e-12,
+      "mean_abs_diff": 3.3244518249375687e-12,
+      "max_pct_diff": 5.134997683832749e-10,
+      "mean_pct_diff": 5.134997683832749e-10
+    },
+    "lambda": {
+      "n": 4,
+      "max_abs_diff": 4.849898260772534e-12,
+      "mean_abs_diff": 2.384233708002708e-12,
+      "max_pct_diff": 8.784972642860076e-10,
+      "mean_pct_diff": 4.3187355224338783e-10
+    },
+    "loadings": {
+      "n": 42,
+      "max_abs_diff": 4.8655524054197485e-12,
+      "mean_abs_diff": 1.694092493601899e-12,
+      "max_pct_diff": 5.078101415790819e-10,
+      "mean_pct_diff": 1.7680980027381384e-10,
+      "rotation_sensitive": true
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "max_pct_diff": 0.0,
+      "mean_pct_diff": 0.0
+    },
+    "quantifications": {
+      "n": 126,
+      "max_abs_diff": 4.435812828162966e-12,
+      "mean_abs_diff": 5.124113485917567e-13,
+      "max_pct_diff": 8.761965255462449e-10,
+      "mean_pct_diff": 1.0121550675809271e-10,
+      "rotation_sensitive": true
+    },
+    "scoremat": {
+      "n": 2058,
+      "max_abs_diff": 4.435743439223927e-12,
+      "mean_abs_diff": 6.843575038463904e-13,
+      "max_pct_diff": 2.4293795405101568e-09,
+      "mean_pct_diff": 3.7481070332821195e-10,
+      "rotation_sensitive": true
+    }
+  }
+}

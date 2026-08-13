@@ -1,0 +1,54 @@
+{
+  "dataset": "WilPat2",
+  "method": "homals",
+  "verdict": "PASS",
+  "detail": "max % diff = 0.02116% (evals)",
+  "scored_max_pct_diff": 0.021161673290993444,
+  "fields": {
+    "dmeasures": {
+      "n": 44,
+      "max_abs_diff": 0.0009139355885843664,
+      "mean_abs_diff": 0.00026014559290776963,
+      "max_pct_diff": 0.18126254324783067,
+      "mean_pct_diff": 0.05159515875535276,
+      "rotation_sensitive": true
+    },
+    "evals": {
+      "n": 20,
+      "max_abs_diff": 0.0005675998142087302,
+      "mean_abs_diff": 8.758843932725746e-05,
+      "max_pct_diff": 0.021161673290993444,
+      "mean_pct_diff": 0.003265536546546168
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 1.618253275825765e-08,
+      "mean_abs_diff": 1.618253275825765e-08,
+      "max_pct_diff": 2.0813707940552874e-06,
+      "mean_pct_diff": 2.0813707940552874e-06
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 11.0,
+      "mean_abs_diff": 11.0,
+      "max_pct_diff": 22.91666666189236,
+      "mean_pct_diff": 22.91666666189236
+    },
+    "quantifications": {
+      "n": 172,
+      "max_abs_diff": 0.0004585402067131608,
+      "mean_abs_diff": 4.872675025911489e-05,
+      "max_pct_diff": 0.22738920776249485,
+      "mean_pct_diff": 0.024163501861009355,
+      "rotation_sensitive": true
+    },
+    "scoremat": {
+      "n": 5423,
+      "max_abs_diff": 0.00013208539770248606,
+      "mean_abs_diff": 9.823934396375458e-06,
+      "max_pct_diff": 0.09477973884245589,
+      "mean_pct_diff": 0.007049302592790394,
+      "rotation_sensitive": true
+    }
+  }
+}

@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environments
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp / scratch files
+*.log
+init_x_r.csv
+diag_output.txt
+
+# IDE
+.idea/
+.vscode/
+
+# R Gifi 
+Gifi-master/
+
+uv.lock
+
+.claude/
+.github/
+.pytest_cache/  
+tests/__pycache__/

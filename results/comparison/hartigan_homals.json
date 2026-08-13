@@ -1,0 +1,54 @@
+{
+  "dataset": "hartigan",
+  "method": "homals",
+  "verdict": "PASS",
+  "detail": "max % diff = 0.02687% (evals)",
+  "scored_max_pct_diff": 0.026870699586959472,
+  "fields": {
+    "dmeasures": {
+      "n": 24,
+      "max_abs_diff": 0.0008115188696220521,
+      "mean_abs_diff": 0.00017985023757407246,
+      "max_pct_diff": 0.08483349906182054,
+      "mean_pct_diff": 0.018800949098834948,
+      "rotation_sensitive": true
+    },
+    "evals": {
+      "n": 9,
+      "max_abs_diff": 0.0009634830441357378,
+      "mean_abs_diff": 0.000376456859392809,
+      "max_pct_diff": 0.026870699586959472,
+      "mean_pct_diff": 0.010499052617234531
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 1.2666684701123643e-08,
+      "mean_abs_diff": 1.2666684701123643e-08,
+      "max_pct_diff": 2.456102857724591e-06,
+      "mean_pct_diff": 2.456102857724591e-06
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 16.0,
+      "mean_abs_diff": 16.0,
+      "max_pct_diff": 22.85714285387755,
+      "mean_pct_diff": 22.85714285387755
+    },
+    "quantifications": {
+      "n": 38,
+      "max_abs_diff": 0.00067618178663785,
+      "mean_abs_diff": 0.00015923960344699995,
+      "max_pct_diff": 0.08459365597841154,
+      "mean_pct_diff": 0.019921654942990672,
+      "rotation_sensitive": true
+    },
+    "scoremat": {
+      "n": 144,
+      "max_abs_diff": 0.00021407936157757934,
+      "mean_abs_diff": 2.849796006731106e-05,
+      "max_pct_diff": 0.07849510080996906,
+      "mean_pct_diff": 0.0104491634872118,
+      "rotation_sensitive": true
+    }
+  }
+}

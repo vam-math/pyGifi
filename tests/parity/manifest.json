@@ -1,0 +1,39 @@
+{
+  "classic_datasets": [
+    "ABC", "WilPat2", "galo", "gubell", "hartigan",
+    "house", "mammals", "neumann", "roskam", "senate07",
+    "sleeping", "small"
+  ],
+  "classic_methods": ["homals", "princals"],
+  "morals_runs": [
+    {
+      "name": "neumann",
+      "file": "pygifi/data/neumann.csv",
+      "x_cols": [0, 1],
+      "y_col": 2
+    },
+    {
+      "name": "goldstein",
+      "file": "pygifi/data/Goldstein Problem.xlsx",
+      "x_cols": [0, 1],
+      "y_col": 2
+    },
+    {
+      "name": "rosenbrock",
+      "file": "pygifi/data/rosenbrock.xlsx",
+      "x_cols": [0, 1],
+      "y_col": 2
+    }
+  ],
+  "exclude_from_plots": [
+    {
+      "dataset": "neumann", "method": "homals",
+      "reason": "both R and Python hit itmax=1000 without converging (eps=1e-8 not reached) -- comparing two incomplete optimizations, not a result mismatch"
+    },
+    {
+      "dataset": "house", "method": "princals",
+      "reason": "converges to a different local optimum on this 439x21 dataset (Python reaches lower stress, 0.6085 vs R's 0.6263, via a different iteration count) -- consistent with ordinary floating-point ALS sensitivity on a harder non-convex landscape, not a demonstrated code defect"
+    }
+  ],
+  "r_seed": 123
+}

@@ -1,0 +1,54 @@
+{
+  "dataset": "neumann",
+  "method": "homals",
+  "verdict": "WARN",
+  "detail": "max % diff = 1.445% (f)",
+  "scored_max_pct_diff": 1.4451984429122136,
+  "fields": {
+    "dmeasures": {
+      "n": 12,
+      "max_abs_diff": 0.0018027106086505595,
+      "mean_abs_diff": 0.00035735592182310614,
+      "max_pct_diff": 0.18027105906234536,
+      "mean_pct_diff": 0.035735591824954706,
+      "rotation_sensitive": true
+    },
+    "evals": {
+      "n": 6,
+      "max_abs_diff": 0.0031311253628110505,
+      "mean_abs_diff": 0.001043708460087259,
+      "max_pct_diff": 0.10437084507913219,
+      "mean_pct_diff": 0.034790281886941034
+    },
+    "f": {
+      "n": 1,
+      "max_abs_diff": 0.00011371927586097813,
+      "mean_abs_diff": 0.00011371927586097813,
+      "max_pct_diff": 1.4451984429122136,
+      "mean_pct_diff": 1.4451984429122136
+    },
+    "ntel": {
+      "n": 1,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "max_pct_diff": 0.0,
+      "mean_pct_diff": 0.0
+    },
+    "quantifications": {
+      "n": 250,
+      "max_abs_diff": 0.08330157382166221,
+      "mean_abs_diff": 0.010152366902993606,
+      "max_pct_diff": 28.63706631966731,
+      "mean_pct_diff": 3.490138192647438,
+      "rotation_sensitive": true
+    },
+    "scoremat": {
+      "n": 195,
+      "max_abs_diff": 4.190750943974808e-07,
+      "mean_abs_diff": 1.5469258648737903e-07,
+      "max_pct_diff": 0.00014406788156096838,
+      "mean_pct_diff": 5.3179569786807045e-05,
+      "rotation_sensitive": true
+    }
+  }
+}
